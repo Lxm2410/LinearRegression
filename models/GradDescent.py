@@ -3,20 +3,16 @@ import math
 
 
 class GDModel:
-    def __init__(self, num_samples, num_features):
-        rng = np.random.default_rng()
+    def __init__(self, num_features):
+        self.rng = np.random.default_rng(12345)
         self.X = np.array([])
-        self.beta = rng.random(num_features + 1) # one constant term
-        self.num_samples = num_samples
+        self.beta = self.rng.random(num_features)
         self.grad = np.array([])
-        self.loss_grad = np.array([])
+        self.loss_grad = np.array(num_features)
     
     def forward(self, X):
-        ones = np.ones((X.shape[0], 1))
-        X = np.concatenate([ones, X], axis=1)
         self.X = X
         ans = np.dot(X, self.beta)
-        self.loss_components = np.dot(X, self.beta)
         return ans
 
 
@@ -34,13 +30,14 @@ class GDModel:
             e = abs(l - last)
             last = l
             self.backward()
-            if cnt % 4 == 0:
-                lr /= 2
             self.beta -= lr * self.grad
+#            if cnt % 50 == 0:
+#                print(f'Iteration {cnt} Loss: {l:.4f}')
+        return cnt
 
 
     def loss(self, Y, labels):
-        self.loss_grad = 2 / self.num_samples * (Y - labels)
+        self.loss_grad = 2 / Y.shape[0] * (Y - labels)
         return np.mean((Y - labels) ** 2)
     
     def evaluate(self, X_test, labels):

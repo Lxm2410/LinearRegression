@@ -7,8 +7,6 @@ class AnalyticLinearReg:
         self.beta = np.array([])
     
     def predict(self, X):
-        ones = np.ones((X.shape[0], 1))
-        X = np.concatenate([ones, X], axis=1)
         return np.dot(X, self.beta)
     
     def loss(self, Y, Y_hat):
@@ -21,9 +19,6 @@ class AnalyticLinearReg:
         return self.loss(labels, prediction)
     
     def fit(self, X_train, labels):
-        ones = np.ones((X_train.shape[0], 1))
-        X_train = np.concatenate([ones, X_train], axis=1)
-
         self.beta = np.dot(np.dot(np.linalg.inv(np.dot(X_train.T, X_train)), X_train.T), labels)
     
     def __apply__(self, X):
