@@ -1,5 +1,6 @@
 import pandas as pd
 from analytic import AnalyticLinearReg
+from GradDescent import GDModel
 
 
 def main():
@@ -24,5 +25,8 @@ def main():
         print(f'MSE of analytic model: {analyticModel.evaluate(test_features, test_labels)}')
         
 
+        gd = GDModel(test_features.shape[0], test_features.shape[1])
+        gd.fit(train_features, train_labels, 0.01)
+        print(f'MSE of simple gradient descent: {gd.evaluate(test_features, test_labels)}')
 
 main()
